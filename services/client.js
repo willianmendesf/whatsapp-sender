@@ -1,6 +1,6 @@
 const { Client, LocalAuth } = require('whatsapp-web.js');
 const qrcode = require('qrcode-terminal');
-const qrImageManager = require('./qrImageManager');
+const qrImageManager = require('../utils/qrImageManager');
 
 let isClientReady = false;
 let reconnectAttempts = 0;

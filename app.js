@@ -1,16 +1,22 @@
 const express = require('express');
-const client = require('./services/whatsappClient');
-const sendRoute = require('./routes/sendRoute');
+const client = require('./services/client');
+const sendRoute = require('./controllers/sendMessageController');
+const { initializeWhatsApp, startServer } = require('./config/server');
 
-const port = 3200;
+// Log de inicialização
+logger.info('🚀 Aplicação iniciando...');
+
+// Inicializa o cliente WhatsApp
+initializeWhatsApp();
 
 const app = express();
+const PORT = process.env.PORT || 3200;
+
 app.use(express.json());
 
 app.use('/api/v1', sendRoute);
 
 client.initialize();
 
-app.listen(port, () => {
-  console.log(`Rodando na porta ${port} 🚀`);
-});
+// Inicia o servidor
+startServer(app, PORT);

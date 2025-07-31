@@ -7,14 +7,18 @@ const logger = require('../utils/logger');
  * @param {Express} app - Instância do Express
  */
 function setupMiddlewares(app) {
-  logger.info('⚙️ Configurando Express e SSE...');
+  logger.info('⚙️ Configurando middlewares do Express...');
+
+  // Middleware para parsing de JSON
+  app.use(express.json());
+  
+  // Middleware para arquivos estáticos
+  app.use(express.static(path.join(__dirname, '..', 'public')));
 
   // Configurar SSE para logs em tempo real
   logger.setupSSE(app);
 
-  // Para postar arquivo de log via HTTP
-  logger.info('🌐 Configurando servidor Express...');
-  app.use(express.static(path.join(__dirname, '..', 'public')));
+  logger.info('✅ Middlewares configurados com sucesso');
 }
 
 module.exports = { setupMiddlewares };

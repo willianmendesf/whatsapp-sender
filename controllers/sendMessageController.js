@@ -1,5 +1,21 @@
 const client = require('../services/client');
 
+/**
+ * Example
+ * {
+      "type": "individual",
+      "number": "5511999999999",
+      "message": "Alerta: falha no canal principal!",
+      "fallbackList": [
+        { "type": "group", "number": "12034567890" },
+        { "type": "individual", "number": "5511988888888" }
+      ]
+    }
+ * @param {*} req 
+ * @param {*} res 
+ * @returns 
+ */
+
 const sendMessage = async (req, res) => {
   const { type, number, message, fallbackList = [] } = req.body;
 

@@ -1,6 +1,6 @@
 const express = require('express');
 const logger = require('./utils/logger');
-const sendRoute = require('./routes/routes');
+const routes = require('./routes/routes');
 const client = require('./services/client');
 const router = express.Router();
 
@@ -16,7 +16,7 @@ const app = express();
 const PORT = process.env.PORT || 3200;
 
 app.use(express.json());
-app.use('/api/v1', sendRoute);
+app.use('/api/v1', routes);
 
 // Inicializa o cliente WhatsApp
 initializeWhatsApp();

@@ -38,7 +38,7 @@ const sendMessage = async (req, res) => {
   try {
     await client.sendMessage(chatId, message);
     var sended = res.status(200).json({
-      status: `✅ Mensagem enviada com sucesso para ${type}.`
+      status: `✅ Mensagem enviada com sucesso. Via Tipo ${type}.`
     });
     console.log('✅ Mensagem enviada com sucesso!')
     return sended;

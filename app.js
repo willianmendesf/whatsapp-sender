@@ -8,13 +8,13 @@ const { setupMiddlewares } = require('./config/middleware');
 const { initializeWhatsApp, startServer } = require('./config/server');
 
 // Log de inicialização
-logger.info('🚀 Aplicação iniciando...');
+logger.info('🚀 Iniciando Aplicação...');
 
 const app = express();
 const PORT = process.env.PORT || 3200;
 
-// Inicializa o cliente WhatsApp primeiro
-initializeWhatsApp();
+// Inicializar Apicação
+startServer(app, 3200)
 
 // Configura middlewares
 setupMiddlewares(app);
@@ -28,5 +28,5 @@ setupAppRoutes(app);
 // Rotas de autenticação
 setupAuthRoutes(app);
 
-// Inicializar Apicação
-startServer(app, 3200)
+// Inicializa o cliente WhatsApp primeiro
+initializeWhatsApp();

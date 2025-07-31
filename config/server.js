@@ -6,7 +6,7 @@ const logger = require('../utils/logger');
  */
 function initializeWhatsApp() {
   logger.info('📱 Inicializando cliente WhatsApp...');
-  require('../utils/whatsappClient');
+  require('../services/client');
 }
 
 /**

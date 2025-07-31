@@ -1,4 +1,5 @@
 const express = require('express');
+const logger = require('./utils/logger');
 const client = require('./services/client');
 const sendRoute = require('./controllers/sendMessageController');
 const { initializeWhatsApp, startServer } = require('./config/server');

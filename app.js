@@ -28,4 +28,5 @@ setupAppRoutes(app);
 // Rotas de autenticação
 setupAuthRoutes(app);
 
+// Inicializar Apicação
 startServer(app, 3200)

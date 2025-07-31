@@ -3,7 +3,11 @@
   "version": "1.0.0.0",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node app.js",
+    "build": "./build.sh",
+    "server": "nohup node app.js > logs/output.log 2>&1 &",
+    "server:start": "./scripts/start.sh",
+    "server:stop": "./scripts/stop-cleanup.sh"
   },
   "repository": {
     "type": "git",

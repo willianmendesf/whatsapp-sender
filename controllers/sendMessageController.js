@@ -17,6 +17,7 @@ const client = require('../services/client');
  */
 
 const sendMessage = async (req, res) => {
+  console.log("Iniciando envio!")
   const { type, number, message, fallbackList = [] } = req.body;
 
   if (!type || !number || !message) {
@@ -36,11 +37,13 @@ const sendMessage = async (req, res) => {
 
   try {
     await client.sendMessage(chatId, message);
-    return res.status(200).json({
-      status: `Mensagem enviada com sucesso para ${type}.`
+    var sended = res.status(200).json({
+      status: `✅ Mensagem enviada com sucesso para ${type}.`
     });
+    console.log('✅ Mensagem enviada com sucesso!')
+    return sended;
   } catch (error) {
-    console.error('Erro ao enviar mensagem:', error);
+    console.error('❌ Erro ao enviar mensagem:', error);
 
     // 🌀 Tentativa de envio para fallback
     const results = [];
@@ -51,9 +54,15 @@ const sendMessage = async (req, res) => {
       const fallbackNumber = fallback.number;
 
       if (fallbackType === 'individual') {
-        fallbackId = fallbackNumber.includes('@c.us') ? fallbackNumber : `${fallbackNumber}@c.us`;
+        if(fallbackNumber == null || fallbackNumber == undefined) 
+          fallbackId = "5511966152161@c.us"
+        else 
+          fallbackId = fallbackNumber.includes('@c.us') ? fallbackNumber : `${fallbackNumber}@c.us`;
       } else if (fallbackType === 'group') {
-        fallbackId = fallbackNumber.includes('@g.us') ? fallbackNumber : `${fallbackNumber}@g.us`;
+        if(fallbackNumber == null || fallbackNumber == undefined) 
+          fallbackId = "120363419667302902@g.us"
+        else 
+          fallbackId = fallbackNumber.includes('@g.us') ? fallbackNumber : `${fallbackNumber}@g.us`;
       } else {
         results.push({ number: fallbackNumber, status: 'Tipo inválido' });
         continue;
@@ -61,9 +70,9 @@ const sendMessage = async (req, res) => {
 
       try {
         await client.sendMessage(fallbackId, message);
-        results.push({ number: fallbackNumber, status: 'Mensagem enviada' });
+        results.push({ number: fallbackNumber, status: '✅ Mensagem enviada' });
       } catch (err) {
-        results.push({ number: fallbackNumber, status: 'Falha ao enviar' });
+        results.push({ number: fallbackNumber, status: '❌ Falha ao enviar' });
       }
     }
 

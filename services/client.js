@@ -36,6 +36,14 @@ client.on('ready', async () => {
   reconnectAttempts = 0;
   qrImageManager.setConnected(true);
 
+  const chats = await client.getChats();
+  const grupos = chats.filter(chat => chat.isGroup);
+
+  logger.info('Grupos encontrados:');
+  grupos.forEach((grupo, index) => {
+    logger.info(`${index + 1}. Nome: ${grupo.name} | ID: ${grupo.id._serialized}`);
+  });
+
   if (pendingMessages.length) {
     logger.info(`📤 Processando ${pendingMessages.length} mensagem(ns) pendente(s)...`);
     while (pendingMessages.length) {

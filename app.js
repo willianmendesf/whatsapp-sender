@@ -11,10 +11,10 @@ const { initializeWhatsApp, startServer } = require('./config/server');
 logger.info('🚀 Iniciando Aplicação...');
 
 const app = express();
-const PORT = process.env.PORT || 3200;
+const PORT = process.env.PORT || 3500;
 
 // Inicializar Apicação
-startServer(app, 3200)
+startServer(app, PORT)
 
 // Configura middlewares
 setupMiddlewares(app);

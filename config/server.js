@@ -7,8 +7,7 @@ const logger = require('../utils/logger');
  */
 function startServer(app, port) {
   app.listen(port, () => {
-    console.log(`🚀 Server is running on http://localhost:${port}`);
-    logger.info(`🚀 Servidor iniciado na porta ${port}`);
+    logger.info(`🚀 Server is running on http://localhost:${port}`);
   });
 }
 

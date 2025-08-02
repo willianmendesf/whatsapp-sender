@@ -1,6 +1,7 @@
 const path = require('path');
 const fs = require('fs');
 const QRCode = require('qrcode');
+const logger = require('./logger');
 
 class QRImageManager {
   constructor() {
@@ -19,10 +20,10 @@ class QRImageManager {
       });
       this.lastQRGenerated = new Date();
       this.error = null;
-      console.log('📸 Imagem do QR gerada em:', this.qrPath);
+      logger.info('📸 Imagem do QR gerada em:', this.qrPath);
     } catch (err) {
       this.error = err.message;
-      console.error('❌ Erro ao gerar imagem do QR:', err);
+      logger.error('❌ Erro ao gerar imagem do QR:', err);
     }
   }
 
@@ -64,7 +65,7 @@ class QRImageManager {
       this.lastQRGenerated = null;
       return true;
     } catch (err) {
-      console.error('Erro ao limpar sessão:', err);
+      logger.error('Erro ao limpar sessão:', err);
       return false;
     }
   }

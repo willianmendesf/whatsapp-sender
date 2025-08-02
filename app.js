@@ -14,7 +14,7 @@ const app = express();
 const PORT = process.env.PORT || 3500;
 
 // Inicializar Apicação
-startServer(app, PORT)
+startServer(app, PORT);
 
 // Configura middlewares
 setupMiddlewares(app);

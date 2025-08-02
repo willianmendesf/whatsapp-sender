@@ -1,4 +1,6 @@
 const client = require('../services/client');
+const logger = require('../utils/logger');
+
 const { MessageMedia } = require('whatsapp-web.js');
 
 const delay = ms => new Promise(res => setTimeout(res, ms));
@@ -29,7 +31,7 @@ async function processarFila() {
 
     // Pausa estratégica a cada 10 envios
     if (contadorEnvios % 10 === 0) {
-      console.log("🛑 Pausa estratégica após 10 mensagens...");
+      logger.info("🛑 Pausa estratégica após 10 mensagens...");
       await delay(10000); // 10 segundos
     }
 
@@ -45,7 +47,7 @@ async function processarFila() {
  * Função que realiza o envio da mensagem individualmente
  */
 async function sendMessageInternal(req, res) {
-  console.log("📨 Processando envio...");
+  logger.info("📨 Processando envio...");
   const { type, number, message, media, fallbackList = [] } = req.body;
 
   if (!type || !number || !message) {
@@ -111,10 +113,10 @@ async function sendMessageInternal(req, res) {
     res.status(200).json({
       status: `✅ Mensagem${media ? ' com mídia' : ''} enviada com sucesso. Via Tipo ${type}.`
     });
-    console.log('✅ Mensagem enviada com sucesso!');
+    logger.info('✅ Mensagem enviada com sucesso!');
 
   } catch (error) {
-    console.error('❌ Erro ao enviar mensagem:', error);
+    logger.error('❌ Erro ao enviar mensagem:', error);
 
     if (fallbackList && fallbackList.length > 0) {
       let hasValidFallback = false;

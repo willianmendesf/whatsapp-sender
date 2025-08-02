@@ -1,9 +1,11 @@
 const { Client, LocalAuth } = require('whatsapp-web.js');
 const qrcode = require('qrcode-terminal');
 const qrImageManager = require('../utils/qrImageManager');
+const logger = require('../utils/logger');
 
 let isClientReady = false;
 let reconnectAttempts = 0;
+const pendingMessages = [];
 const maxReconnectAttempts = 5;
 
 const client = new Client({
@@ -15,51 +17,65 @@ const client = new Client({
 });
 
 client.on('qr', async (qr) => {
-  console.log('🔍 Escaneie o QR Code abaixo:');
+  logger.info('🔍 Escaneie o QR Code abaixo:');
   qrcode.generate(qr, { small: true });
   
   // Gera a imagem do QR para a página web
   try {
     await qrImageManager.generate(qr);
-    console.log('📸 QR Code salvo para acesso web em /login');
+    logger.info('📸 QR Code salvo para acesso web em /login');
   } catch (error) {
-    console.error('❌ Erro ao gerar QR Code para web:', error.message);
+    logger.error('❌ Erro ao gerar QR Code para web:', error.message);
     qrImageManager.setError('Erro ao gerar QR Code: ' + error.message);
   }
 });
 
-client.on('ready', () => {
-  console.log('✅ WhatsApp client pronto!');
+client.on('ready', async () => {
+  logger.info('✅ WhatsApp client pronto!');
   isClientReady = true;
   reconnectAttempts = 0;
   qrImageManager.setConnected(true);
+
+  if (pendingMessages.length) {
+    logger.info(`📤 Processando ${pendingMessages.length} mensagem(ns) pendente(s)...`);
+    while (pendingMessages.length) {
+      const { chatId, message, resolve, reject } = pendingMessages.shift();
+      try {
+        const sent = await sendMessage(chatId, message);
+        resolve(sent);
+      } catch (error) {
+        reject(error);
+      }
+    }
+  }
 });
 
+
 client.on('disconnected', (reason) => {
-  console.log('❌ WhatsApp desconectado:', reason);
+  logger.info('❌ WhatsApp desconectado:', reason);
   isClientReady = false;
   qrImageManager.setConnected(false);
   qrImageManager.setError('Desconectado: ' + reason);
   
   if (reconnectAttempts < maxReconnectAttempts) {
     reconnectAttempts++;
-    console.log(`🔄 Tentativa de reconexão ${reconnectAttempts}/${maxReconnectAttempts}...`);
+    logger.info(`🔄 Tentativa de reconexão ${reconnectAttempts}/${maxReconnectAttempts}...`);
     setTimeout(() => {
       client.initialize();
     }, 10000); // Aguarda 10s antes de tentar reconectar
   } else {
-    console.log('🚨 Máximo de tentativas de reconexão atingido');
+    logger.info('🚨 Máximo de tentativas de reconexão atingido');
     qrImageManager.setError('Máximo de tentativas de reconexão atingido');
   }
 });
 
 client.on('auth_failure', (message) => {
-  console.error('❌ Falha na autenticação:', message);
+  logger.error('❌ Falha na autenticação:', message);
   qrImageManager.setError('Falha na autenticação: ' + message);
 });
 
 client.on('loading_screen', (percent, message) => {
-  console.log(`⏳ Carregando... ${percent}% - ${message}`);
+  logger.info(`⏳ Carregando... ${percent}% - ${message}`);
 });
 
 // Função para verificar se o cliente está pronto
@@ -80,20 +96,28 @@ async function ensureClientReady() {
 
 // Função melhorada para envio de mensagens
 async function sendMessage(chatId, message) {
-  await ensureClientReady();
-  
+  if (!isClientReady) {
+    logger.warn(`🕒 [Mensagem Pendente] Cliente não pronto. Aguardando para enviar mensagem para ${chatId}...`);
+    return new Promise((resolve, reject) => {
+      pendingMessages.push({ chatId, message, resolve, reject });
+    });
+  }
+
   try {
     const chat = await client.getChatById(chatId);
     if (!chat) {
       throw new Error(`Chat ${chatId} não encontrado`);
     }
-    
-    return await client.sendMessage(chatId, message);
+
+    const sent = await client.sendMessage(chatId, message);
+    logger.info(`✅ [Mensagem] Mensagem enviada para ${chatId}`);
+    return sent;
   } catch (error) {
-    console.error(`Erro ao enviar mensagem para ${chatId}:`, error.message);
+    logger.error(`❌ [Erro de Envio] Falha ao enviar para ${chatId}:`, error.message);
     throw error;
   }
 }
+
 
 client.initialize();
 

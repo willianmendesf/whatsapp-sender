@@ -48,7 +48,7 @@ async function processarFila() {
  */
 async function sendMessageInternal(req, res) {
   logger.info("📨 Processando envio...");
-  const { type, number, message, media, fallbackList = [] } = req.body;
+  const { type, number, message, media, fallbackList = [], mentions = []} = req.body;
 
   if (!type || !number || !message) {
     return res.status(400).json({
@@ -101,14 +101,29 @@ async function sendMessageInternal(req, res) {
       await delay(Math.floor(Math.random() * 1500) + 1500);
 
       if (message && media.caption) {
-        await client.sendMessage(chatId, message);
+        if (mentions && Array.isArray(mentions) && mentions.length > 0) {
+          const resolvedMentions = await Promise.all(
+            mentions.map(m => client.getContactById(m))
+          );
+          await client.sendMessage(chatId, message, { mentions: resolvedMentions });
+        } 
+        
+        else await client.sendMessage(chatId, message);
+        
         await delay(Math.floor(Math.random() * 1500) + 1500);
       }
-
     } else {
-      await client.sendMessage(chatId, message);
+      if (mentions && Array.isArray(mentions) && mentions.length > 0) {
+        const resolvedMentions = await Promise.all(
+          mentions.map(m => client.getContactById(m))
+        );
+        await client.sendMessage(chatId, message, { mentions: resolvedMentions });
+      }
+      else await client.sendMessage(chatId, message);
+  
       await delay(Math.floor(Math.random() * 1500) + 1500);
     }
+
 
     res.status(200).json({
       status: `✅ Mensagem${media ? ' com mídia' : ''} enviada com sucesso. Via Tipo ${type}.`

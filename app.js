@@ -1,11 +1,15 @@
 const express = require('express');
 const logger = require('./utils/logger');
+const path = require('path');
 
 const { setupAppRoutes } = require('./routes/appRoutes');
 const { setupAuthRoutes } = require('./routes/authRoutes');
 const { setupApiRoutes } = require('./routes/routes');
 const { setupMiddlewares } = require('./config/middleware');
 const { initializeWhatsApp, startServer } = require('./config/server');
+
+require('dotenv').config({ path: path.resolve(__dirname, '.env') });
+
 
 // Log de inicialização
 logger.info('🚀 Iniciando Aplicação...');

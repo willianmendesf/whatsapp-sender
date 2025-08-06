@@ -126,7 +126,12 @@ async function sendMessage(chatId, message) {
   }
 }
 
+async function findContactById(contactId) {
+  const contacts = await client.getContacts();
+  return contacts.find(c => c.id._serialized === contactId);
+}
+
 
 client.initialize();
 
-module.exports = { client, ensureClientReady, sendMessage, isClientReady: () => isClientReady };
+module.exports = { client, ensureClientReady, sendMessage, findContactById, isClientReady: () => isClientReady };

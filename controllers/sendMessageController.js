@@ -103,7 +103,7 @@ async function sendMessageInternal(req, res) {
       if (message && media.caption) {
         if (mentions && Array.isArray(mentions) && mentions.length > 0) {
           const resolvedMentions = await Promise.all(
-            mentions.map(m => client.getContactById(m))
+            mentions.map(m => client.findContactById(m))
           );
           await client.sendMessage(chatId, message, { mentions: resolvedMentions });
         } 
@@ -115,7 +115,7 @@ async function sendMessageInternal(req, res) {
     } else {
       if (mentions && Array.isArray(mentions) && mentions.length > 0) {
         const resolvedMentions = await Promise.all(
-          mentions.map(m => client.getContactById(m))
+          mentions.map(m => client.findContactById(m))
         );
         await client.sendMessage(chatId, message, { mentions: resolvedMentions });
       }

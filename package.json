@@ -1,5 +1,5 @@
 {
-  "name": "whatsapp-message-processor",
+  "name": "whatsapp-sender",
   "version": "1.0.5.0",
   "main": "app.js",
   "author": "willianmendesf",
@@ -24,10 +24,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/willianmendesf/whatsapp-message-processor.git"
+    "url": "git+https://github.com/willianmendesf/whatsapp-sender.git"
   },
   "bugs": {
-    "url": "https://github.com/willianmendesf/whatsapp-message-processor/issues"
+    "url": "https://github.com/willianmendesf/whatsapp-sender/issues"
   },
-  "homepage": "https://github.com/willianmendesf/whatsapp-message-processor#readme"
+  "homepage": "https://github.com/willianmendesf/whatsapp-sender#readme"
 }
